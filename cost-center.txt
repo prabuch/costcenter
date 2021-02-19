@@ -1,0 +1,23 @@
+$tenantId="<YOUR TENANT ID" # Teanant ID
+$subs = Get-AzSubscription -TenantId $tenantId
+foreach ($sub in $subs)
+{
+
+Write-Host Processing subscription $sub.SubscriptionName
+try
+{
+Select-AzSubscription -SubscriptionId $sub.SubscriptionId -ErrorAction Continue
+$RG = Get-AzResourceGroup | where {$_.Tags['SubDivision'] -eq "WBA IT" -or $_.Tags['SubDivision'] -eq "Retail Pharmacy International" -or $_.Tags['SubDivision'] -eq "Corporate" -or $_.Tags['SubDivision'] -eq "Global Brands" -or $_.Tags['SubDivision'] -eq "International Retail" -or $_.Tags['SubDivision'] -eq "Pharmaceutical Wholesale"}
+
+foreach ($item in $RG) {
+Write-Host $item.ResourceGroupName
+#$tag = Get-AzTag -ResourceId $item.ResourceId    # This is to GET and LIST the TAGS
+#Get-AzResource -ResourceGroupName $item.ResourceGroupName | ForEach-Object {Set-AzResource -ResourceId $item.ResourceId -Tag $item.Tags -Force }
+} #THIS IS TO "SET" THE VALUE. SO BE CAREFUL BEFORE REMOVE COMMENT
+}
+catch
+{
+Write-Host $error[0]
+}
+
+}
